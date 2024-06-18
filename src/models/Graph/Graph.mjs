@@ -120,51 +120,42 @@ export default class Graph {
         D[start] = 0;
     
         let notVisited = [];
-        
         for (let i = 0; i < numVertices; i++) {
             notVisited.push(i);
         }
     
-        while (notVisited.length > 0) {
-            let found = false;
-            let minDistance = inf;
+        let continueAlgorithm = true;
+    
+        while (continueAlgorithm) {
             let u = null;
+            let minDistance = inf;
+    
 
-            for (let i = 0; i < notVisited.length; i++) {
-                const vertex = notVisited[i];
-                if (D[vertex] < minDistance) {
-                    minDistance = D[vertex];
-                    u = vertex;
-                    found = true;
+            for (let i = 0; i < numVertices; i++) {
+                if (!visited[i] && D[i] < minDistance) {
+                    minDistance = D[i];
+                    u = i;
                 }
             }
     
-            if (!found) {
-                break;
-            }
+            if (u === null) {
+                continueAlgorithm = false; 
+            } else {
+                visited[u] = true;
     
-            visited[u] = true;
+                const neighborsLinkedList = this.#listAdyacencia[u];
+                let current = neighborsLinkedList.getHead();
     
-
-            const neighborsLinkedList = this.#listAdyacencia[u];
-            let current = neighborsLinkedList.getHead();
-            while (current) {
-                const neighbor = this.#map.get(current.value.node);
-                const weight = current.value.weight;
+                while (current) {
+                    const neighbor = this.#map.get(current.value.node);
+                    const weight = current.value.weight;
     
-                if (D[u] + weight < D[neighbor]) {
-                    D[neighbor] = D[u] + weight;
-                }
-                current = current.next;
-            }
-
-            let notVisitedNext = [];
-            for (let i = 0; i < notVisited.length; i++) {
-                if (notVisited[i] !== u) {
-                    notVisitedNext.push(notVisited[i]);
+                    if (!visited[neighbor] && D[u] + weight < D[neighbor]) {
+                        D[neighbor] = D[u] + weight;
+                    }
+                    current = current.next;
                 }
             }
-            notVisited = notVisitedNext;
         }
     
         return D[end];
