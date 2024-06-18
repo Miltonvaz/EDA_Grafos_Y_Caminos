@@ -1,10 +1,8 @@
 export default class Estaciones{
     name
-    ability
 
-    constructor(name,ability){
+    constructor(name){
         this.name = name    
-        this.ability = ability
     }
 
 }
