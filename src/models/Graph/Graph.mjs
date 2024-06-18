@@ -107,52 +107,66 @@ export default class Graph {
     dijkstra(startVertex, endVertex) {
         const inf = 1000000;
         const numVertices = this.numVertices();
-        const D = [];
-        const visited = [];
-
+        let D = [];
+        let visited = [];
+    
         for (let i = 0; i < numVertices; i++) {
             D[i] = inf;
             visited[i] = false;
         }
-
-        const startIndex = this.#map.get(startVertex);
-        const endIndex = this.#map.get(endVertex);
-        D[startIndex] = 0;
-
-        let allReachableVisited = false;
-
-        while (!allReachableVisited) {
+    
+        const start = this.#map.get(startVertex);
+        const end = this.#map.get(endVertex);
+        D[start] = 0;
+    
+        let notVisited = [];
+        
+        for (let i = 0; i < numVertices; i++) {
+            notVisited.push(i);
+        }
+    
+        while (notVisited.length > 0) {
             let found = false;
-            let u = 0;
             let minDistance = inf;
+            let u = null;
 
-            for (let j = 0; j < numVertices; j++) {
-                if (!visited[j] && D[j] < minDistance) {
-                    minDistance = D[j];
-                    u = j;
+            for (let i = 0; i < notVisited.length; i++) {
+                const vertex = notVisited[i];
+                if (D[vertex] < minDistance) {
+                    minDistance = D[vertex];
+                    u = vertex;
                     found = true;
                 }
             }
-
+    
             if (!found) {
-                allReachableVisited = true;
-            } else {
-                visited[u] = true;
+                break;
+            }
+    
+            visited[u] = true;
+    
 
-                const neighborsLinkedList = this.#listAdyacencia[u];
-                let current = neighborsLinkedList.getHead();
-                while (current) {
-                    const neighbor = this.#map.get(current.value.node);
-                    const weight = current.value.weight;
+            const neighborsLinkedList = this.#listAdyacencia[u];
+            let current = neighborsLinkedList.getHead();
+            while (current) {
+                const neighbor = this.#map.get(current.value.node);
+                const weight = current.value.weight;
+    
+                if (D[u] + weight < D[neighbor]) {
+                    D[neighbor] = D[u] + weight;
+                }
+                current = current.next;
+            }
 
-                    if (D[u] + weight < D[neighbor]) {
-                        D[neighbor] = D[u] + weight;
-                    }
-                    current = current.next;
+            let notVisitedNext = [];
+            for (let i = 0; i < notVisited.length; i++) {
+                if (notVisited[i] !== u) {
+                    notVisitedNext.push(notVisited[i]);
                 }
             }
+            notVisited = notVisitedNext;
         }
-
-        return D[endIndex];
+    
+        return D[end];
     }
 }

@@ -98,8 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    formCamino.addEventListener('click', () => {
-
+    formCamino.addEventListener('submit', (event) => {
+        event.preventDefault();
         const nodoOrigenCamino = document.getElementById('nodoOrigenCamino').value.trim();
         const nodoDestinoCamino = document.getElementById('nodoDestinoCamino').value.trim();
 
