@@ -107,16 +107,16 @@ export default class Graph {
     dijkstra(startVertex, endVertex) {
         const inf = 1000000;
         const numVertices = this.numVertices();
-        let D = [];   // Array para las distancias
-        let L_p = []; // Lista de vértices no visitados
-        let L = [];   // Lista de vértices visitados
-        let V = [];   // Lista de todos los vértices
+        let D = [];  
+        let L_p = []; 
+        let L = [];   
+        let V = [];  
         
-        // Llenar los arreglos D, L_p y V
+ 
         for (let i = 0; i < numVertices; i++) {
-            D.push(inf);    // Inicializar todas las distancias como infinito
-            L_p.push(i);    // Inicializar L_p con todos los vértices
-            V.push(i);      // Llenar V con todos los vértices
+            D.push(inf);    
+            L_p.push(i);    
+            V.push(i);      
         }
     
         const start = this.#map.get(startVertex);
@@ -124,19 +124,13 @@ export default class Graph {
     
         D[start] = 0;
     
-        console.log('Inicialización:');
-        console.log('D:', D);
-        console.log('L_p:', L_p);
-        console.log('L:', L);
-        console.log('V:', V);
-        console.log('------------------');
+    
     
         while (L.length < V.length) {
-            // Encontrar vértice en L_p con la mínima distancia D
+
             let minDistance = inf;
             let minIndex = -1;
-    
-            // Recorrer L_p para encontrar el vértice con la mínima distancia
+
             for (let i = 0; i < L_p.length; i++) {
                 const vertex = L_p[i];
                 if (minIndex === -1 || D[vertex] < minDistance) {
@@ -144,16 +138,14 @@ export default class Graph {
                     minIndex = i;
                 }
             }
-    
-            // Obtener u (vértice con mínima distancia) y moverlo a L (marcar como visitado)
+
             const u = L_p[minIndex];
             L.push(u);
     
-            // Eliminar u de L_p sin usar filter
+
             L_p[minIndex] = L_p[L_p.length - 1];
             L_p.pop();
     
-            // Actualizar las distancias de los vecinos de u
             const neighborsLinkedList = this.#listAdyacencia[u];
             let current = neighborsLinkedList.getHead();
     
@@ -166,14 +158,6 @@ export default class Graph {
                 }
                 current = current.next;
             }
-    
-            console.log('Iteración:');
-            console.log('u:', u);
-            console.log('D:', D);
-            console.log('L_p:', L_p);
-            console.log('L:', L);
-            console.log('V:', V);
-            console.log('------------------');
         }
     
         return D[end];
