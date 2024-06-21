@@ -103,61 +103,81 @@ export default class Graph {
     numVertices() {
         return this.#map.size;
     }
-
+    
     dijkstra(startVertex, endVertex) {
         const inf = 1000000;
         const numVertices = this.numVertices();
-        let D = [];
-        let visited = [];
-    
+        let D = [];   // Array para las distancias
+        let L_p = []; // Lista de vértices no visitados
+        let L = [];   // Lista de vértices visitados
+        let V = [];   // Lista de todos los vértices
+        
+        // Llenar los arreglos D, L_p y V
         for (let i = 0; i < numVertices; i++) {
-            D[i] = inf;
-            visited[i] = false;
+            D.push(inf);    // Inicializar todas las distancias como infinito
+            L_p.push(i);    // Inicializar L_p con todos los vértices
+            V.push(i);      // Llenar V con todos los vértices
         }
     
         const start = this.#map.get(startVertex);
         const end = this.#map.get(endVertex);
+    
         D[start] = 0;
     
-        let notVisited = [];
-        for (let i = 0; i < numVertices; i++) {
-            notVisited.push(i);
-        }
+        console.log('Inicialización:');
+        console.log('D:', D);
+        console.log('L_p:', L_p);
+        console.log('L:', L);
+        console.log('V:', V);
+        console.log('------------------');
     
-        let continueAlgorithm = true;
-    
-        while (continueAlgorithm) {
-            let u = null;
+        while (L.length < V.length) {
+            // Encontrar vértice en L_p con la mínima distancia D
             let minDistance = inf;
+            let minIndex = -1;
     
-
-            for (let i = 0; i < numVertices; i++) {
-                if (!visited[i] && D[i] < minDistance) {
-                    minDistance = D[i];
-                    u = i;
+            // Recorrer L_p para encontrar el vértice con la mínima distancia
+            for (let i = 0; i < L_p.length; i++) {
+                const vertex = L_p[i];
+                if (minIndex === -1 || D[vertex] < minDistance) {
+                    minDistance = D[vertex];
+                    minIndex = i;
                 }
             }
     
-            if (u === null) {
-                continueAlgorithm = false; 
-            } else {
-                visited[u] = true;
+            // Obtener u (vértice con mínima distancia) y moverlo a L (marcar como visitado)
+            const u = L_p[minIndex];
+            L.push(u);
     
-                const neighborsLinkedList = this.#listAdyacencia[u];
-                let current = neighborsLinkedList.getHead();
+            // Eliminar u de L_p sin usar filter
+            L_p[minIndex] = L_p[L_p.length - 1];
+            L_p.pop();
     
-                while (current) {
-                    const neighbor = this.#map.get(current.value.node);
-                    const weight = current.value.weight;
+            // Actualizar las distancias de los vecinos de u
+            const neighborsLinkedList = this.#listAdyacencia[u];
+            let current = neighborsLinkedList.getHead();
     
-                    if (!visited[neighbor] && D[u] + weight < D[neighbor]) {
-                        D[neighbor] = D[u] + weight;
-                    }
-                    current = current.next;
+            while (current) {
+                const neighbor = this.#map.get(current.value.node);
+                const weight = current.value.weight;
+    
+                if (L_p.includes(neighbor) && D[u] + weight < D[neighbor]) {
+                    D[neighbor] = D[u] + weight;
                 }
+                current = current.next;
             }
+    
+            console.log('Iteración:');
+            console.log('u:', u);
+            console.log('D:', D);
+            console.log('L_p:', L_p);
+            console.log('L:', L);
+            console.log('V:', V);
+            console.log('------------------');
         }
     
         return D[end];
     }
+    
+    
 }

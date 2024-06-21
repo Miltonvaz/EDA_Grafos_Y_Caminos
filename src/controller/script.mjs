@@ -102,14 +102,14 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         const nodoOrigenCamino = document.getElementById('nodoOrigenCamino').value.trim();
         const nodoDestinoCamino = document.getElementById('nodoDestinoCamino').value.trim();
-
+    
         if (nodoOrigenCamino === '' || nodoDestinoCamino === '') {
             mostrarError("Debes ingresar nodos válidos para calcular el camino más corto.");
             return;
         }
-
+    
         const shortestDistance = grafo.dijkstra(nodoOrigenCamino, nodoDestinoCamino);
-
+    
         if (shortestDistance === 1000000) {
             mostrarError(`No se encontró camino entre "${nodoOrigenCamino}" y "${nodoDestinoCamino}".`);
         } else {
@@ -117,6 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mostrarExito(`El camino más corto entre "${nodoOrigenCamino}" y "${nodoDestinoCamino}" es ${shortestDistance}.`);
         }
     });
+    
 
     function mostrarRecorrido(tipoRecorrido, vertices) {
         let recorrido = vertices.join(' &#8594; ');
